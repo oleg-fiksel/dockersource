@@ -1,0 +1,41 @@
+variables:
+  DOCKER_DRIVER: overlay
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+
+stages:
+- test
+- build
+
+perl_critic:
+  stage: test
+  image: olegfiksel/perl_critic:latest
+  script:
+    - critichtml *.pl
+    - critictext *.pl
+  artifacts:
+    when: on_failure
+    expire_in: 1 week
+    paths:
+    - critic_html
+
+perl_test_perlver:
+  stage: test
+  image: olegfiksel/perl_critic:latest
+  script:
+    - test_perlver *.pl
+
+build_docker_image:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  tags:
+    - dind
+  script:
+    - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+  only:
+    - /^v\d+/
+
