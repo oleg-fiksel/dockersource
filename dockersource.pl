@@ -35,6 +35,9 @@ sub usage{
     print <<EOF;
 Usage: $0 (--whitelist 'regex'|--blacklist 'regex') --file /path/to/Dockerfile [--debug] [--help]
 
+--whitelist         specify a Perl RegEx to whitelist Docker images used in FROM clause
+--blacklist         specify a Perl RegEx to blacklist Docker images used in FROM clause
+
 Examples:
     $0 --whitelist '^my-private-registry.org\/.*' --file /path/to/Dockerfile --file /path/to/another/Dockerfile
     $0 --whitelist '^openjdk' --whitelist 'openjdk' --file /path/to/Dockerfile
@@ -60,8 +63,7 @@ sub check_line{
     my $image_name = shift;
     my @violated_rules = ();
 
-    print STDERR "(DEBUG) check_line: Checking image: \"$image_name\"",$/
-        if $debug;
+    print "check_line: Checking image: \"$image_name\"",$/;
 
     foreach my $rule (@whitelist){
         if($image_name =~ $rule->{regex}){
@@ -74,12 +76,20 @@ sub check_line{
         push @violated_rules, $rule
             if $image_name =~ $rule->{regex};
     }
+    if(@violated_rules == 0){
+        print "check_line: PASS",$/
+    }
+    else{
+        print "check_line: FAIL",$/
+    }
     return @violated_rules;
 }
 
 sub main{
-    # Blacklist everything if no blacklist is specified
-    push @blacklist, '.';
+    if(@whitelist > 0){
+        print "main: adding '.' to blacklist because it's empty and whitelist is specified",$/;
+        push @blacklist, '.'
+    }
     compile_patterns();
     my $return_code = 0;
     foreach my $file (@files){
