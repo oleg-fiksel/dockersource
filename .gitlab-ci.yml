@@ -24,6 +24,25 @@ perl_test_perlver:
   script:
     - test_perlver *.pl
 
+lint:dockerfile:
+  stage: test
+  image: hadolint/hadolint:latest-debian
+  script:
+    - |
+      bash -c '
+      for i in $(find . -name Dockerfile); do
+        echo -n "hadolint: Checking $i ... "
+        hadolint $@ $i
+        retcode=$?
+        if [[ "$retcode" != 0 ]]; then
+          echo "Error ($retcode)!"
+          exit ${retcode}
+        else
+          echo "Done!"
+        fi
+      done
+      '
+
 build_docker_image:
   stage: build
   image: docker:latest
