@@ -7,7 +7,7 @@ use Getopt::Long;
 use Data::Dumper;
 
 use version;
-our $VERSION = '1.0.0';
+our $VERSION = '1.0.1';
 print "$0 Version: $VERSION$/$/";
 
 my $from_regex = qr/^FROM\s+(\S+)/i;
@@ -37,6 +37,10 @@ Usage: $0 (--whitelist 'regex'|--blacklist 'regex') --file /path/to/Dockerfile [
 
 --whitelist         specify a Perl RegEx to whitelist Docker images used in FROM clause
 --blacklist         specify a Perl RegEx to blacklist Docker images used in FROM clause
+
+Return codes:
+      0 - No violations found
+    >=1 - Number of violations found
 
 Examples:
     $0 --whitelist '^my-private-registry.org\/.*' --file /path/to/Dockerfile --file /path/to/another/Dockerfile
@@ -69,6 +73,7 @@ sub check_line{
         if($image_name =~ $rule->{regex}){
             print STDERR "(DEBUG) check_line: =>(whitelist) match $rule->{string}",$/
                 if $debug;
+            print "check_line: PASS",$/;
             return ();
         }
     }
