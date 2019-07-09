@@ -30,7 +30,7 @@ lint:dockerfile:
   script:
     - |
       bash -c '
-      for i in $(find . -name Dockerfile); do
+      for i in $(find . -name Dockerfile | grep -v '/tests/'); do
         echo -n "hadolint: Checking $i ... "
         hadolint $@ $i
         retcode=$?
@@ -42,6 +42,12 @@ lint:dockerfile:
         fi
       done
       '
+
+test:data:
+  stage: test
+  image: perl:5.30-slim
+  script:
+    - cd tests && perl ./run_tests.pl
 
 build_docker_image:
   stage: build
@@ -57,4 +63,3 @@ build_docker_image:
     - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
   only:
     - /^v\d+/
-

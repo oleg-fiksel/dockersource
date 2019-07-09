@@ -8,7 +8,7 @@ use Data::Dumper;
 
 use version;
 our $VERSION = '1.0.1';
-print "$0 Version: $VERSION$/$/";
+print "$0 Version: $VERSION$/";
 
 my $from_regex = qr/^FROM\s+(\S+)/i;
 
