@@ -1,3 +1,7 @@
+# 2.1.0
+## Features
+* Added coloring of output and consolidated output
+
 # 2.0.0
 ## Breaking changes
 * Changed the way to specify files for scanning (without `--file filename`) to be able to pipe the filenames from `find`

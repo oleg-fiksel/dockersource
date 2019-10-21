@@ -7,7 +7,7 @@ use Getopt::Long;
 use Data::Dumper;
 
 use version;
-our $VERSION = '2.0.0';
+our $VERSION = '2.1.0';
 print "$0 Version: $VERSION$/";
 
 my $from_regex = qr/^FROM\s+(\S+)/i;
@@ -68,13 +68,14 @@ sub check_line{
     my $image_name = shift;
     my @violated_rules = ();
 
-    print "check_line: Checking image: \"$image_name\"",$/;
+    print "check_line: Checking image: \"$image_name\"",$/
+        if $debug;
 
     foreach my $rule (@whitelist){
         if($image_name =~ $rule->{regex}){
             print STDERR "(DEBUG) check_line: =>(whitelist) match $rule->{string}",$/
                 if $debug;
-            print "check_line: PASS",$/;
+            print "Image \"$image_name\" \e[1;32mOK\e[0m",$/;
             return ();
         }
     }
@@ -83,10 +84,10 @@ sub check_line{
             if $image_name =~ $rule->{regex};
     }
     if(@violated_rules == 0){
-        print "check_line: PASS",$/
+        print "Image \"$image_name\" \e[1;32mOK\e[0m",$/;
     }
     else{
-        print "check_line: FAIL",$/
+        print "Image \"$image_name\" \e[1;31mNOK\e[0m",$/;
     }
     return @violated_rules;
 }
