@@ -7,7 +7,7 @@ use Getopt::Long;
 use Data::Dumper;
 
 use version;
-our $VERSION = '1.0.1';
+our $VERSION = '2.0.0';
 print "$0 Version: $VERSION$/";
 
 my $from_regex = qr/^FROM\s+(\S+)/i;
@@ -27,13 +27,14 @@ GetOptions (
     )
   or die("Error in command line arguments$/");
 
+@files = @ARGV;
 usage() if @whitelist+@blacklist == 0 || $help || @files == 0;
 
 exit main();
 
 sub usage{
     print <<EOF;
-Usage: $0 (--whitelist 'regex'|--blacklist 'regex') --file /path/to/Dockerfile [--debug] [--help]
+Usage: $0 (--whitelist 'regex'|--blacklist 'regex') [--debug] [--help] /path/to/Dockerfile /path/to_another/Dockerfile
 
 --whitelist         specify a Perl RegEx to whitelist Docker images used in FROM clause
 --blacklist         specify a Perl RegEx to blacklist Docker images used in FROM clause
@@ -43,10 +44,10 @@ Return codes:
     >=1 - Number of violations found
 
 Examples:
-    $0 --whitelist '^my-private-registry.org\/.*' --file /path/to/Dockerfile --file /path/to/another/Dockerfile
-    $0 --whitelist '^openjdk' --whitelist 'openjdk' --file /path/to/Dockerfile
-    $0 --whitelist '^openjdk:.*-alpine' --file /path/to/Dockerfile
-    $0 --blacklist '^wildhacker\/.*' --file /path/to/Dockerfile
+    $0 --whitelist '^my-private-registry.org\/.*' /path/to/Dockerfile /path/to/another/Dockerfile
+    $0 --whitelist '^openjdk' --whitelist 'openjdk' /path/to/Dockerfile
+    $0 --whitelist '^openjdk:.*-alpine' /path/to/Dockerfile
+    $0 --blacklist '^wildhacker\/.*' /path/to/Dockerfile
 
 EOF
     exit 1;
@@ -90,7 +91,22 @@ sub check_line{
     return @violated_rules;
 }
 
+sub check_files_not_readable{
+    my @files = @_;
+    my @not_readable_files;
+    foreach my $file (@files){
+        push @not_readable_files, $file
+            if !-r $file;
+    }
+    die "ERROR: Can't read files: ",$/,join($/,@not_readable_files),$/,"Exiting!"
+        if @not_readable_files >0;
+    return 0;
+}
+
 sub main{
+    print "main: going to scan the following files: ",$/,join($/, @files),$/
+        if $debug;
+    check_files_not_readable(@files);
     if(@whitelist > 0){
         print "main: adding '.' to blacklist because it's empty and whitelist is specified",$/;
         push @blacklist, '.'

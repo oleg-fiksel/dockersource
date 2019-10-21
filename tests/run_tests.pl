@@ -6,7 +6,7 @@ my $exit_code = 0;
 foreach my $file (@files){
   chomp $file;
   print "Running test for $file",$/;
-  my $cmd='perl ../dockersource.pl --debug --file "'.$file.'"';
+  my $cmd='perl ../dockersource.pl --debug "'.$file.'"';
   my $params = "";
   {
     # Get the second directory up from the Dockerfile

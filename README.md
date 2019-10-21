@@ -19,7 +19,8 @@ It's a Perl 5 script so you can use any Perl (>= v5.6.0) environment to run this
 `docker run olegfiksel/dockersource perl /opt/dockersource/dockersource.pl --help`
 
 ```
-Usage: ./dockersource.pl (--whitelist 'regex'|--blacklist 'regex') --file /path/to/Dockerfile [--debug] [--help]
+./dockersource.pl Version: 2.0.0
+Usage: ./dockersource.pl (--whitelist 'regex'|--blacklist 'regex') [--debug] [--help] /path/to/Dockerfile /path/to_another/Dockerfile
 
 --whitelist         specify a Perl RegEx to whitelist Docker images used in FROM clause
 --blacklist         specify a Perl RegEx to blacklist Docker images used in FROM clause
@@ -29,10 +30,10 @@ Return codes:
     >=1 - Number of violations found
 
 Examples:
-    ./dockersource.pl --whitelist '^my-private-registry.org/.*' --file /path/to/Dockerfile --file /path/to/another/Dockerfile
-    ./dockersource.pl --whitelist '^openjdk' --whitelist 'openjdk' --file /path/to/Dockerfile
-    ./dockersource.pl --whitelist '^openjdk:.*-alpine' --file /path/to/Dockerfile
-    ./dockersource.pl --blacklist '^wildhacker/.*' --file /path/to/Dockerfile
+    ./dockersource.pl --whitelist '^my-private-registry.org/.*' /path/to/Dockerfile /path/to/another/Dockerfile
+    ./dockersource.pl --whitelist '^openjdk' --whitelist 'openjdk' /path/to/Dockerfile
+    ./dockersource.pl --whitelist '^openjdk:.*-alpine' /path/to/Dockerfile
+    ./dockersource.pl --blacklist '^wildhacker/.*' /path/to/Dockerfile
 ```
 
 ## GitLab-CI
@@ -48,9 +49,8 @@ compliance:dockerfile:
   image: olegfiksel/dockersource
   script:
     - |
-      perl /opt/dockersource/dockersource.pl \
+      find . -type f -name Dockerfile | perl /opt/dockersource/dockersource.pl \
         --whitelist '^openjdk:\d+[\w\d-]*$' \
         --blacklist ':latest' \
-        --blacklist '.' \
-        --file Dockerfile \
+        --blacklist '.'
 ```
