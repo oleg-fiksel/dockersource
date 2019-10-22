@@ -49,7 +49,7 @@ compliance:dockerfile:
   image: olegfiksel/dockersource
   script:
     - |
-      find . -type f -name Dockerfile | perl /opt/dockersource/dockersource.pl \
+      find . -type f -name Dockerfile | xargs perl /opt/dockersource/dockersource.pl \
         --whitelist '^openjdk:\d+[\w\d-]*$' \
         --blacklist ':latest' \
         --blacklist '.'
