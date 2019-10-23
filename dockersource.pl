@@ -7,13 +7,14 @@ use Getopt::Long;
 use Data::Dumper;
 
 use version;
-our $VERSION = '2.1.0';
+our $VERSION = '2.2.0';
 print "$0 Version: $VERSION$/";
 
 my $from_regex = qr/^FROM\s+(\S+)/i;
 
 my @whitelist = ();
 my @blacklist = ();
+my $print_summary = 0;
 my @files = ();
 my $help = 0;
 my $debug = 0;
@@ -21,6 +22,7 @@ my $debug = 0;
 GetOptions (
     "whitelist=s" => \@whitelist,
     "blacklist=s" => \@blacklist,
+    "summary" => \$print_summary,
     "file=s" => \@files,
     "help" => \$help,
     "debug" => \$debug,
@@ -34,10 +36,12 @@ exit main();
 
 sub usage{
     print <<EOF;
-Usage: $0 (--whitelist 'regex'|--blacklist 'regex') [--debug] [--help] /path/to/Dockerfile /path/to_another/Dockerfile
+Usage: $0 (--whitelist 'regex'|--blacklist 'regex') [--summary] [--debug] [--help] /path/to/Dockerfile /path/to_another/Dockerfile
 
---whitelist         specify a Perl RegEx to whitelist Docker images used in FROM clause
---blacklist         specify a Perl RegEx to blacklist Docker images used in FROM clause
+--whitelist         Specify a Perl RegEx to whitelist Docker images used in FROM clause
+--blacklist         Specify a Perl RegEx to blacklist Docker images used in FROM clause
+--summary           Print the whitelist and blacklist summary before the run
+--debug             Enable debug output
 
 Return codes:
       0 - No violations found
@@ -104,6 +108,16 @@ sub check_files_not_readable{
     return 0;
 }
 
+sub print_summary{
+    my $listname = shift;
+    my $list = shift;
+    print "\e[1;30m|===[\e[0m ".$listname." \e[1;30m]\e[0m",$/;
+    foreach my $i (@$list){
+        print "\e[1;30m+-------[\e[0m ",$i," \e[1;30m]\e[0m",$/;
+    }
+    return 0;
+}
+
 sub main{
     print "main: going to scan the following files: ",$/,join($/, @files),$/
         if $debug;
@@ -112,6 +126,12 @@ sub main{
         print "main: adding '.' to blacklist because it's empty and whitelist is specified",$/;
         push @blacklist, '.'
     }
+
+    if($print_summary){
+        print_summary('Whitelist', \@whitelist);
+        print_summary('Blacklist', \@blacklist);
+    }
+
     compile_patterns();
     my $return_code = 0;
     foreach my $file (@files){

@@ -19,21 +19,23 @@ It's a Perl 5 script so you can use any Perl (>= v5.6.0) environment to run this
 `docker run olegfiksel/dockersource perl /opt/dockersource/dockersource.pl --help`
 
 ```
-./dockersource.pl Version: 2.0.0
-Usage: ./dockersource.pl (--whitelist 'regex'|--blacklist 'regex') [--debug] [--help] /path/to/Dockerfile /path/to_another/Dockerfile
+dockersource.pl Version: 2.2.0
+Usage: dockersource.pl (--whitelist 'regex'|--blacklist 'regex') [--summary] [--debug] [--help] /path/to/Dockerfile /path/to_another/Dockerfile
 
---whitelist         specify a Perl RegEx to whitelist Docker images used in FROM clause
---blacklist         specify a Perl RegEx to blacklist Docker images used in FROM clause
+--whitelist         Specify a Perl RegEx to whitelist Docker images used in FROM clause
+--blacklist         Specify a Perl RegEx to blacklist Docker images used in FROM clause
+--summary           Print the whitelist and blacklist summary before the run
+--debug             Enable debug output
 
 Return codes:
       0 - No violations found
     >=1 - Number of violations found
 
 Examples:
-    ./dockersource.pl --whitelist '^my-private-registry.org/.*' /path/to/Dockerfile /path/to/another/Dockerfile
-    ./dockersource.pl --whitelist '^openjdk' --whitelist 'openjdk' /path/to/Dockerfile
-    ./dockersource.pl --whitelist '^openjdk:.*-alpine' /path/to/Dockerfile
-    ./dockersource.pl --blacklist '^wildhacker/.*' /path/to/Dockerfile
+    dockersource.pl --whitelist '^my-private-registry.org/.*' /path/to/Dockerfile /path/to/another/Dockerfile
+    dockersource.pl --whitelist '^openjdk' --whitelist 'openjdk' /path/to/Dockerfile
+    dockersource.pl --whitelist '^openjdk:.*-alpine' /path/to/Dockerfile
+    dockersource.pl --blacklist '^wildhacker/.*' /path/to/Dockerfile
 ```
 
 ## GitLab-CI
