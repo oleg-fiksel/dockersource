@@ -1,3 +1,7 @@
+# 2.2.0
+## Features
+* Added `--summary` argument for printing the whitelist and blacklist summary before the run
+
 # 2.1.0
 ## Features
 * Added coloring of output and consolidated output
