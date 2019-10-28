@@ -1,3 +1,7 @@
+# 2.2.1
+## Bugfixes
+* Fixed message adding a blacklist of '.' when no blacklist is specified
+
 # 2.2.0
 ## Features
 * Added `--summary` argument for printing the whitelist and blacklist summary before the run
