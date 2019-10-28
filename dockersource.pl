@@ -7,7 +7,7 @@ use Getopt::Long;
 use Data::Dumper;
 
 use version;
-our $VERSION = '2.2.0';
+our $VERSION = '2.2.1';
 print "$0 Version: $VERSION$/";
 
 my $from_regex = qr/^FROM\s+(\S+)/i;
@@ -123,7 +123,7 @@ sub main{
         if $debug;
     check_files_not_readable(@files);
     if(@whitelist > 0){
-        print "main: adding '.' to blacklist because it's empty and whitelist is specified",$/;
+        print "main: adding '.' to blacklist because whitelist is specified",$/;
         push @blacklist, '.'
     }
 

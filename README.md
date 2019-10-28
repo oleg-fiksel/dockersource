@@ -19,7 +19,7 @@ It's a Perl 5 script so you can use any Perl (>= v5.6.0) environment to run this
 `docker run olegfiksel/dockersource perl /opt/dockersource/dockersource.pl --help`
 
 ```
-dockersource.pl Version: 2.2.0
+dockersource.pl Version: 2.2.1
 Usage: dockersource.pl (--whitelist 'regex'|--blacklist 'regex') [--summary] [--debug] [--help] /path/to/Dockerfile /path/to_another/Dockerfile
 
 --whitelist         Specify a Perl RegEx to whitelist Docker images used in FROM clause
