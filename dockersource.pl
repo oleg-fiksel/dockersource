@@ -7,7 +7,7 @@ use Getopt::Long;
 use Data::Dumper;
 
 use version;
-our $VERSION = '2.2.1';
+our $VERSION = '3.0.0';
 print "$0 Version: $VERSION$/";
 
 my $from_regex = qr/^FROM\s+(\S+)/i;
@@ -45,6 +45,7 @@ Usage: $0 (--whitelist 'regex'|--blacklist 'regex') [--summary] [--debug] [--hel
 
 Return codes:
       0 - No violations found
+      0 - No parameters given
     >=1 - Number of violations found
 
 Examples:
@@ -54,7 +55,7 @@ Examples:
     $0 --blacklist '^wildhacker\/.*' /path/to/Dockerfile
 
 EOF
-    exit 1;
+    exit 0;
 }
 
 sub compile_patterns{
