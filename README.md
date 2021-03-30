@@ -1,3 +1,5 @@
+# ⚠️ WARNING! This repo is moved to https://gitlab.com/olegfiksel/dockersource
+
 # Dockersource
 
 Check `FROM` derective of a `Dockerfile` for whitelisted or blacklisted image RegEx.
